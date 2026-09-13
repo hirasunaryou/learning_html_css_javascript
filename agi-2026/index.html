@@ -18,7 +18,7 @@
       --red:#b92f45; --redbg:#fff2f4; --shadow:0 18px 55px rgba(27,65,96,.10);
     }
     *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
+    html{scroll-behavior:smooth;scroll-padding-top:28px}
     body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;line-height:1.9;letter-spacing:.01em}
     a{color:var(--blue2);text-decoration-thickness:1px;text-underline-offset:3px}
     a:hover{color:var(--blue)}
@@ -29,7 +29,12 @@
     h1{font-size:clamp(2.15rem,6vw,4.55rem);line-height:1.13;letter-spacing:-.035em;margin:.38em 0 .2em;max-width:850px}
     .subtitle{font-size:clamp(1.05rem,2.2vw,1.45rem);max-width:760px;color:#d8edf9;margin:0}
     .meta{margin-top:28px;font-size:.9rem;color:#c8e0ef}
-    main{margin-top:-34px;padding-bottom:80px}
+
+    .reading-progress{position:fixed;left:0;top:0;height:4px;width:100%;z-index:1000;background:transparent;pointer-events:none}
+    .reading-progress span{display:block;height:100%;width:0;background:#55a9e8;box-shadow:0 0 8px rgba(85,169,232,.45)}
+
+    .page-shell{width:min(1380px,calc(100% - 40px));margin:-34px auto 0;display:grid;grid-template-columns:248px minmax(0,1080px);gap:28px;align-items:start;padding-bottom:80px;justify-content:center}
+    main{min-width:0}
     .card{background:var(--paper);border:1px solid rgba(205,222,235,.9);border-radius:18px;box-shadow:var(--shadow)}
     .hero-card{padding:22px;margin-bottom:26px}
     .figure{margin:0}
@@ -47,7 +52,7 @@
     .quick p{font-size:.93rem;line-height:1.7;color:var(--muted);margin:0}
     .flow{padding:24px 26px;margin:18px 0 36px;background:linear-gradient(90deg,#eff7fd,#f9fbfd);border:1px solid var(--line);border-radius:15px;text-align:center;font-weight:750;color:#285b83;font-size:clamp(.95rem,2.3vw,1.12rem)}
     .flow span{white-space:nowrap}
-    section.article{padding:46px 56px;margin:26px 0}
+    section.article{padding:46px 56px;margin:26px 0;scroll-margin-top:22px}
     .section-no{font-size:.78rem;font-weight:800;color:var(--blue2);letter-spacing:.12em;text-transform:uppercase}
     h2{font-size:clamp(1.55rem,3.6vw,2.25rem);line-height:1.35;margin:.2em 0 .8em;letter-spacing:-.025em}
     h3{font-size:1.24rem;line-height:1.5;margin:2em 0 .6em}
@@ -69,18 +74,54 @@
     .sources li{counter-increment:s;padding:13px 0 13px 42px;border-top:1px solid #e7eef4;position:relative;font-size:.93rem}
     .sources li:before{content:counter(s);position:absolute;left:0;top:13px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#e7f2fa;color:#145581;font-size:.78rem;font-weight:800}
     .note{color:var(--muted);font-size:.9rem}
-    footer{padding:34px 0 50px;color:#647787;font-size:.82rem;text-align:center}
     .toplink{display:inline-block;margin-top:22px;font-weight:700}
+
+    .toc{position:sticky;top:22px;margin-top:34px;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:16px;padding:20px 16px;box-shadow:0 10px 36px rgba(27,65,96,.08);backdrop-filter:blur(8px)}
+    .toc-title{font-size:.82rem;font-weight:800;letter-spacing:.08em;color:#315a7d;margin:0 8px 10px;text-transform:uppercase}
+    .toc ul{list-style:none;margin:0;padding:0}
+    .toc li{margin:2px 0}
+    .toc a{display:block;text-decoration:none;color:#536a7d;border-left:3px solid transparent;border-radius:0 9px 9px 0;padding:8px 9px;font-size:.88rem;line-height:1.45;transition:.18s ease}
+    .toc a:hover{background:#f0f7fc;color:var(--blue)}
+    .toc a.active{background:#e9f4fc;color:#0d4f86;border-left-color:#2475bb;font-weight:800}
+    .toc .toc-home{font-weight:750;color:#234f73;border-bottom:1px solid #e8eef3;border-radius:0;padding-bottom:12px;margin-bottom:8px}
+    .toc-foot{font-size:.75rem;color:#8293a2;border-top:1px solid #edf1f4;margin:12px 8px 0;padding-top:12px;line-height:1.55}
+
+    .mobile-toc{display:none;margin:0 0 24px;background:white;border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 28px rgba(27,65,96,.07);overflow:hidden}
+    .mobile-toc summary{cursor:pointer;font-weight:800;color:#174e78;padding:15px 18px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+    .mobile-toc summary::-webkit-details-marker{display:none}
+    .mobile-toc summary:after{content:"＋";font-size:1.25rem;font-weight:500}
+    .mobile-toc[open] summary:after{content:"−"}
+    .mobile-toc nav{padding:0 12px 13px}
+    .mobile-toc a{display:block;padding:9px 8px;border-top:1px solid #edf2f6;text-decoration:none;color:#52697c;font-size:.9rem}
+
+    .back-to-top{position:fixed;right:22px;bottom:22px;width:46px;height:46px;border-radius:50%;border:1px solid #cfe0ec;background:rgba(255,255,255,.94);color:#185987;display:grid;place-items:center;text-decoration:none;font-size:1.25rem;font-weight:800;box-shadow:0 8px 25px rgba(27,65,96,.14);opacity:0;pointer-events:none;transform:translateY(8px);transition:.18s ease;z-index:900}
+    .back-to-top.visible{opacity:1;pointer-events:auto;transform:none}
+    .back-to-top:hover{background:#eef7fd;color:#0d4f86}
+
+    footer{padding:34px 0 50px;color:#647787;font-size:.82rem;text-align:center}
+
+    @media(max-width:1180px){
+      .page-shell{width:min(1080px,calc(100% - 32px));grid-template-columns:1fr;margin-top:-34px}
+      .toc{display:none}.mobile-toc{display:block}
+    }
     @media(max-width:760px){
-      header{padding:48px 0 62px} main{margin-top:-24px}.wrap{width:min(100% - 20px,1080px)}
+      header{padding:48px 0 62px}
+      .page-shell{width:min(100% - 20px,1080px);margin-top:-24px;padding-bottom:64px}
+      .wrap{width:min(100% - 20px,1080px)}
       .hero-card{padding:8px}.lede{padding:26px 22px}.quick{grid-template-columns:1fr}.flow{text-align:left}
       section.article{padding:32px 22px}.agi-grid{grid-template-columns:1fr}
-      table{min-width:760px;font-size:.83rem} h1{font-size:2.3rem}
+      table{min-width:760px;font-size:.83rem}h1{font-size:2.3rem}
+      .back-to-top{right:14px;bottom:14px}
     }
-    @media print{body{background:white}.card{box-shadow:none}header{padding:30px 0;color:black;background:white;border-bottom:2px solid #ddd}.subtitle,.meta{color:#333}main{margin-top:0}}
+    @media print{
+      body{background:white}.card{box-shadow:none}header{padding:30px 0;color:black;background:white;border-bottom:2px solid #ddd}.subtitle,.meta{color:#333}
+      .page-shell{display:block;width:100%;margin:0}.toc,.mobile-toc,.reading-progress,.back-to-top{display:none!important}
+    }
   </style>
 </head>
 <body>
+<div class="reading-progress" aria-hidden="true"><span id="progressBar"></span></div>
+
 <header id="top">
   <div class="wrap">
     <div class="eyebrow">Study note / AGI × Society</div>
@@ -90,144 +131,210 @@
   </div>
 </header>
 
-<main class="wrap">
-  <div class="card hero-card">
-    <figure class="figure">
-      <a href="assets/agi-summary.svg" target="_blank" rel="noopener" title="画像を拡大して見る">
-        <img src="assets/agi-summary.svg" alt="2021年から2026年のAGI議論の変遷、能力・導入・社会の3つの時計、Cognitive・Agentic・Economic・Embodied AGIの分類をまとめたインフォグラフィック">
-      </a>
-      <figcaption>図1：この記事の全体像。Webでは拡大しても文字が鮮明なSVG版として掲載しています。時系列は、各年の「公式なAGI定義」ではなく、当時の議論で目立った論点を私なりに整理したものです。</figcaption>
-    </figure>
-  </div>
+<div class="page-shell">
+  <aside class="toc" aria-label="目次">
+    <div class="toc-title">Contents</div>
+    <ul>
+      <li><a class="toc-home" href="#overview">概要・一枚まとめ</a></li>
+      <li><a href="#timeline">01　2021→2026の変化</a></li>
+      <li><a href="#hidden-criterion">02　大量失業という判定軸</a></li>
+      <li><a href="#definitions">03　ゴールポスト論の注意点</a></li>
+      <li><a href="#reliability">04　解ける ≠ 任せられる</a></li>
+      <li><a href="#three-clocks">05　3つの時計</a></li>
+      <li><a href="#my-view">06　ではAGIは来たのか</a></li>
+      <li><a href="#sources">参照資料</a></li>
+    </ul>
+    <div class="toc-foot">スクロールすると、現在読んでいる章が自動で強調表示されます。</div>
+  </aside>
 
-  <div class="card lede">
-    <p class="thesis">結論から言うと、私が感じていた違和感は、<strong>「AGIかどうか」の判定軸が、AIそのものの能力から、AIによって起きる社会変化へ少しずつ移って見えること</strong>から来ているのではないか、と考えています。</p>
-    <p>例えば「大量失業が起きていないから、まだAGIではない」という感覚です。大量失業は重要な社会現象ですが、それはAIの能力そのものではありません。AIができること、実際の業務に導入されること、経済に影響すること、そして社会制度まで変わることには、それぞれ時間差がある可能性があります。</p>
-    <div class="caution"><strong>この記事の立場：</strong>「現在のAIはAGIだ」と断定する記事ではありません。AGIを二値のラベルとして争うより、<b>能力・自律性・経済的代替・社会変化を分けて観察した方が、現在地を正確に議論できるのではないか</b>、という問題提起です。</div>
-    <div class="caution"><strong>この記事の作り方：</strong>私が出したのは、2021年頃から感じていた「AGIの能力と、AGIが来たら起きると想定された社会変化が、いつの間にか混ざって議論されていないか」という素朴な違和感と問いです。そこから先の<strong>資料調査、論点整理、構成、文章化、図表作成、Webページ化はChatGPTが担当</strong>しました。したがって、この記事は私自身を専門家として売り出したり、私の文章力や知識を示したりするためのものではありません。AIとの対話を使って一つの疑問を調べ、整理し、勉強会で議論するために作ったメモです。内容に誤りや異論があれば、それも含めて議論の材料にしたいと思っています。</div>
-  </div>
+  <main>
+    <details class="mobile-toc">
+      <summary>目次から読む</summary>
+      <nav aria-label="モバイル目次">
+        <a href="#overview">概要・一枚まとめ</a>
+        <a href="#timeline">01　2021→2026の変化</a>
+        <a href="#hidden-criterion">02　大量失業という判定軸</a>
+        <a href="#definitions">03　ゴールポスト論の注意点</a>
+        <a href="#reliability">04　解ける ≠ 任せられる</a>
+        <a href="#three-clocks">05　3つの時計</a>
+        <a href="#my-view">06　ではAGIは来たのか</a>
+        <a href="#sources">参照資料</a>
+      </nav>
+    </details>
 
-  <div class="quick">
-    <article><div class="num">1</div><h3>能力の時計</h3><p>言語、推論、コード、マルチモーダル、ツール利用など、AIそのものの能力は非常に速く進んだ。</p></article>
-    <article><div class="num">2</div><h3>導入の時計</h3><p>業務フロー、権限、品質保証、責任分担へAIを組み込む速度は、能力向上より遅い。</p></article>
-    <article><div class="num">3</div><h3>社会の時計</h3><p>採用、賃金、組織、教育、法律などが変わる速度は、さらに遅い可能性がある。</p></article>
-  </div>
-
-  <div class="flow"><span>AIの能力</span>　→　<span>実務への導入</span>　→　<span>経済への影響</span>　→　<span>社会変化</span>　　<small>（同時には進まない）</small></div>
-
-  <section class="card article">
-    <div class="section-no">01 / Timeline</div>
-    <h2>2021→2026：AGIの論点は、どう移ってきたように見えるか</h2>
-    <p>私自身、2021年頃から機械学習を勉強しながらAGIの議論を追ってきました。当時と今を比べると、「これができたらかなりAGIらしい」と感じる能力が実現するたびに、次の不足点が前面に出てきたように見えます。</p>
-    <p>もちろん、下の表は「その年に世界共通のAGI定義がこうだった」という意味ではありません。研究・製品・社会議論を振り返って、<strong>注目されるボトルネックがどのように移動して見えたか</strong>を整理した仮説です。</p>
-
-    <div class="table-wrap"><table>
-      <thead><tr><th>年</th><th>目立った論点</th><th>期待された変化</th><th>その後に見えた進展</th><th>次に目立った不足</th></tr></thead>
-      <tbody>
-        <tr><td>2021</td><td>未知課題への汎化</td><td>Narrow AIを超える汎用性</td><td>基盤モデルと汎化能力の発展</td><td>generality</td></tr>
-        <tr><td>2022</td><td>自然言語で幅広く扱えるか</td><td>万能アシスタント</td><td>ChatGPTの急速な普及</td><td>reasoning</td></tr>
-        <tr><td>2023</td><td>数学・コード・専門知を横断できるか</td><td>知的労働の大変化</td><td>GPT-4を「初期の不完全なAGI」と見る議論も登場</td><td>reliability</td></tr>
-        <tr><td>2024</td><td>マルチモーダル、ツール、より難しい評価</td><td>専門知的業務の広範な代替</td><td>既存ベンチマークの飽和と、より難しい評価への移行</td><td>autonomy</td></tr>
-        <tr><td>2025</td><td>エージェント化</td><td>AIが仕事を丸ごと遂行</td><td>自動化ワークフロー・エージェント利用が拡大</td><td>long-horizon reliability</td></tr>
-        <tr><td>2026</td><td>長時間・高信頼の自律遂行</td><td>組織再設計、大規模な仕事代替</td><td>AI利用は広い一方、エージェント導入や労働市場への影響はまだ不均一</td><td>deployment / economic impact</td></tr>
-      </tbody>
-    </table></div>
-
-    <p class="pull">「できるようになった能力」がAGIの証拠になるより、「まだ起きていない社会変化」がAGIではない証拠として強く意識されるようになっていないか。</p>
-
-    <p>2021年のDeepMindの研究紹介では、未知の条件や未経験タスクへ適応できる、より一般的なエージェントを作ること自体が重要な研究課題として扱われていました。2023年にはMicrosoft Researchの研究者らがGPT-4について、数学、コード、視覚、医学、法律、心理などを横断する能力から「初期の、まだ不完全なAGIと合理的に見ることもできる」と論じています。</p>
-    <p>2024年のStanford AI Indexでは、ImageNet、SQuAD、SuperGLUEなど既存ベンチマークの性能が飽和し、より難しい数学・推論・コーディング・エージェント評価へ測定対象が移ったことが整理されています。つまり、能力の進展に応じて「次に測るべきもの」が変わること自体は、研究として自然な現象でもあります。</p>
-  </section>
-
-  <section class="card article">
-    <div class="section-no">02 / Hidden criterion</div>
-    <h2>「大量失業が起きていない＝AGIではない」は、何を混ぜているのか</h2>
-    <div class="warning"><strong>大量失業は「AIの能力」ではなく、「AI・企業・制度・人間が相互作用した結果として出てくる社会現象」です。</strong></div>
-    <p>ここが、私の違和感の中心です。</p>
-    <p>仮にAIが多くの知的作業を技術的には実行できても、企業が即座に人間を置き換えられるとは限りません。実際の仕事には、権限、機密情報、説明責任、品質保証、失敗時の復旧、顧客との関係、既存システム、法律、社内政治などが絡みます。</p>
-    <p>そのため、「AIができる」から「人間の雇用が減る」までの間には、少なくとも次の段階があります。</p>
-    <blockquote><strong>Capability</strong>（技術的にできる） → <strong>Deployment</strong>（業務で使える） → <strong>Economic impact</strong>（費用・生産性・採用が変わる） → <strong>Social transformation</strong>（組織・制度・社会が変わる）</blockquote>
-    <p>Stanford AI Index 2026は、この時間差を考えるうえで象徴的です。調査対象組織の88%がAIを利用し、70%が少なくとも一つの業務機能で生成AIを利用する一方、AIエージェントの導入はほぼすべての業務機能で一桁%にとどまると報告しています。また、若いソフトウェア開発者など一部では雇用影響が現れている一方、経済全体では大規模な雇用減少はまだ確認されていません。</p>
-    <p>ILOの2025年分析も、世界の労働者の約4人に1人が生成AIへの何らかの曝露を持つ職業にいる一方、多くの仕事は「消滅」より「変容」の可能性が高いとしています。</p>
-    <p>したがって、<strong>大量失業がまだ起きていないことは重要な観測事実ですが、それだけから「AIの汎用的知能がまだ一定水準に達していない」とは直接言えません。</strong></p>
-  </section>
-
-  <section class="card article">
-    <div class="section-no">03 / Definitions</div>
-    <h2>ただし「AGIのゴールポストが全部ずれた」と言うのも正確ではない</h2>
-    <p>ここは反対側も押さえておく必要があります。</p>
-    <p>例えばOpenAI CharterはAGIを、単に幅広い問題を解けるAIとは定義していません。そこでは、<strong>「経済的に価値のある仕事の大部分で人間を上回る、高度に自律的なシステム」</strong>という強い定義を採用しています。この定義なら、自律性や経済的仕事能力が不足している限り「まだAGIではない」という判断は、後から追加された条件ではありません。</p>
-    <p>一方、Google DeepMindの「Levels of AGI」は、AGIを一つのON/OFFで扱わず、能力の<strong>幅（generality）</strong>、深さ・性能（performance）、さらに展開時の<strong>自律性（autonomy）</strong>などを分けて評価する考え方を提案しています。</p>
-    <p>この見方をすると、今の混乱はかなり整理できます。</p>
-
-    <div class="agi-grid">
-      <div><b>Cognitive AGI</b>幅広い知的課題に対応できるか。現在のAIが最も大きく進んだ領域。</div>
-      <div><b>Agentic AGI</b>長時間の仕事を、状況変化や失敗に対応しながら自律的に完遂できるか。</div>
-      <div><b>Economic AGI</b>人間が行う経済的に価値のある仕事の大部分を、実際に代替できるか。</div>
-      <div><b>Embodied AGI</b>物理世界で、人間のように認識・学習・行動できるか。</div>
+    <div id="overview" class="card hero-card">
+      <figure class="figure">
+        <a href="assets/agi-summary.svg" target="_blank" rel="noopener" title="画像を拡大して見る">
+          <img src="assets/agi-summary.svg" alt="2021年から2026年のAGI議論の変遷、能力・導入・社会の3つの時計、Cognitive・Agentic・Economic・Embodied AGIの分類をまとめたインフォグラフィック">
+        </a>
+        <figcaption>図1：この記事の全体像。Webでは拡大しても文字が鮮明なSVG版として掲載しています。時系列は、各年の「公式なAGI定義」ではなく、当時の議論で目立った論点を私なりに整理したものです。</figcaption>
+      </figure>
     </div>
 
-    <p>この4つは厳密な標準用語として固定された分類ではなく、議論を整理するための便宜的な分け方です。しかし、<strong>「Cognitiveはかなり進んだが、Agentic・Economic・Embodiedは同じ速度では進んでいない」</strong>と考えると、現在のAIが「ものすごくAGIっぽいのに、AGI社会には見えない」理由を説明しやすくなります。</p>
-  </section>
+    <div class="card lede">
+      <p class="thesis">結論から言うと、私が感じていた違和感は、<strong>「AGIかどうか」の判定軸が、AIそのものの能力から、AIによって起きる社会変化へ少しずつ移って見えること</strong>から来ているのではないか、と考えています。</p>
+      <p>例えば「大量失業が起きていないから、まだAGIではない」という感覚です。大量失業は重要な社会現象ですが、それはAIの能力そのものではありません。AIができること、実際の業務に導入されること、経済に影響すること、そして社会制度まで変わることには、それぞれ時間差がある可能性があります。</p>
+      <div class="caution"><strong>この記事の立場：</strong>「現在のAIはAGIだ」と断定する記事ではありません。AGIを二値のラベルとして争うより、<b>能力・自律性・経済的代替・社会変化を分けて観察した方が、現在地を正確に議論できるのではないか</b>、という問題提起です。</div>
+      <div class="caution"><strong>この記事の作り方：</strong>私が出したのは、2021年頃から感じていた「AGIの能力と、AGIが来たら起きると想定された社会変化が、いつの間にか混ざって議論されていないか」という素朴な違和感と問いです。そこから先の<strong>資料調査、論点整理、構成、文章化、図表作成、Webページ化はChatGPTが担当</strong>しました。したがって、この記事は私自身を専門家として売り出したり、私の文章力や知識を示したりするためのものではありません。AIとの対話を使って一つの疑問を調べ、整理し、勉強会で議論するために作ったメモです。内容に誤りや異論があれば、それも含めて議論の材料にしたいと思っています。</div>
+    </div>
 
-  <section class="card article">
-    <div class="section-no">04 / Reliability</div>
-    <h2>「問題を解ける」と「仕事を任せられる」は違った</h2>
-    <p>モデルが高性能になったことで、以前は見えにくかった別のボトルネックも明確になりました。</p>
-    <p>難しいコードを一度書けることと、一週間のプロジェクトを安心して任せられることは違います。実務では、目的を保持し、必要な情報を探し、曖昧さを処理し、途中結果を検証し、失敗から復旧し、最後まで責任ある成果物にまとめる必要があります。</p>
-    <p>METRの「Task-Completion Time Horizon」は、この違いを測ろうとする試みの一つです。人間の専門家ならどれくらい時間がかかるタスクまで、AIエージェントが一定の成功率で完了できるかを見る指標で、2026年5月時点でも継続的に更新されています。</p>
-    <p>ここから見えるのは、単なる「IQのような賢さ」ではなく、<strong>信頼して仕事を任せられる時間幅</strong>が、現在の重要な能力軸になっていることです。</p>
-    <p>つまり、条件が全部恣意的に追加されたというより、AIが進歩したからこそ、次の壁が実際に見えるようになった面もあります。</p>
-  </section>
+    <div class="quick">
+      <article><div class="num">1</div><h3>能力の時計</h3><p>言語、推論、コード、マルチモーダル、ツール利用など、AIそのものの能力は非常に速く進んだ。</p></article>
+      <article><div class="num">2</div><h3>導入の時計</h3><p>業務フロー、権限、品質保証、責任分担へAIを組み込む速度は、能力向上より遅い。</p></article>
+      <article><div class="num">3</div><h3>社会の時計</h3><p>採用、賃金、組織、教育、法律などが変わる速度は、さらに遅い可能性がある。</p></article>
+    </div>
 
-  <section class="card article">
-    <div class="section-no">05 / Three clocks</div>
-    <h2>私が一番しっくりきた整理：「3つの時計」</h2>
-    <h3>1. Intelligence Clock ― AI能力の時計</h3>
-    <p>言語、知識、推論、コード、画像、音声、ツール利用、計画など。ここ数年、最も速く進んだ時計です。</p>
-    <h3>2. Deployment Clock ― 導入の時計</h3>
-    <p>社内データへの接続、権限、セキュリティ、監査、責任分担、品質保証、業務フロー再設計。技術デモよりずっと時間がかかります。</p>
-    <h3>3. Society Clock ― 社会の時計</h3>
-    <p>採用、賃金、職種、教育、企業構造、社会保障、法律。さらに多くの人や制度が関わるため、変化は遅く、不均一になります。</p>
-    <p class="pull">AGI級に見える知能が先に現れ、その数年後に「AGI社会」が現れる、という時間差は十分あり得る。</p>
-    <p>もしこの仮説が正しければ、「社会がまだ変わっていないからAI能力もAGI未満だ」という逆算は危うくなります。むしろ見るべきなのは、どの時計がどこまで進んでいるかです。</p>
-  </section>
+    <div class="flow"><span>AIの能力</span>　→　<span>実務への導入</span>　→　<span>経済への影響</span>　→　<span>社会変化</span>　　<small>（同時には進まない）</small></div>
 
-  <section class="card article">
-    <div class="section-no">06 / My view</div>
-    <h2>では、AGIはもう来たのか？</h2>
-    <p>私自身は、ここを無理にYES / NOで決めなくてよいと思うようになりました。</p>
-    <p>フィジカル世界を除く知的な「汎用性」という点では、2021年頃に想像していた境界をすでにかなり越えているように感じます。一方で、長時間の自律遂行、信頼性、継続学習、責任を伴う意思決定、物理世界への適応では、人間との差がまだ大きい。</p>
-    <p>そのため現在を、</p>
-    <blockquote><strong>「AGIがある日突然到来する前夜」ではなく、複数の能力と社会実装が別々の速度で境界を越えていく移行期</strong></blockquote>
-    <p>と見る方が、私にはしっくりきます。</p>
-    <p>そして、AGIについて議論するときには次の二つを意識して分けたいと思います。</p>
-    <p><span class="tag">Definition</span><strong>AGIそのものに必要だと考える能力は何か。</strong></p>
-    <p><span class="tag">Prediction</span><strong>AGIが登場した結果として、社会に何が起きると予想するか。</strong></p>
-    <p>「大量失業」「GDPの急成長」「研究開発の爆発的加速」「人員の少ない企業」といった話は極めて重要です。ただ、それらはAGIの定義そのものなのか、AGI後についての予測なのかを区別しておかないと、予測が外れるたびにAGIの意味そのものが動いて見えてしまいます。</p>
-    <p class="pull">数年後に振り返ったとき、「AGIは○月○日に来た」とはならず、「気づけば私たちは数年間その移行期の中にいた」と評価されるのかもしれません。</p>
-  </section>
+    <section class="card article" id="timeline">
+      <div class="section-no">01 / Timeline</div>
+      <h2>2021→2026：AGIの論点は、どう移ってきたように見えるか</h2>
+      <p>私自身、2021年頃から機械学習を勉強しながらAGIの議論を追ってきました。当時と今を比べると、「これができたらかなりAGIらしい」と感じる能力が実現するたびに、次の不足点が前面に出てきたように見えます。</p>
+      <p>もちろん、下の表は「その年に世界共通のAGI定義がこうだった」という意味ではありません。研究・製品・社会議論を振り返って、<strong>注目されるボトルネックがどのように移動して見えたか</strong>を整理した仮説です。</p>
 
-  <section class="card article" id="sources">
-    <div class="section-no">Sources / Further reading</div>
-    <h2>主な参照資料</h2>
-    <p class="note">記事の時系列表は、これらを含む資料をもとにした筆者の整理です。特定機関が2021→2026の各年をこのように公式分類しているわけではありません。</p>
-    <ol class="sources">
-      <li><a href="https://openai.com/charter/" target="_blank" rel="noopener">OpenAI Charter</a> — AGIを「高度に自律的で、経済的に価値のある仕事の大部分で人間を上回るシステム」と定義。</li>
-      <li><a href="https://deepmind.google/blog/generally-capable-agents-emerge-from-open-ended-play/" target="_blank" rel="noopener">Google DeepMind: Generally capable agents emerge from open-ended play (2021)</a> — 未経験タスクへの一般化と適応を扱う研究。</li>
-      <li><a href="https://arxiv.org/abs/2303.12712" target="_blank" rel="noopener">Bubeck et al., Sparks of Artificial General Intelligence (2023)</a> — GPT-4を「初期の、まだ不完全なAGI」と合理的に見うると論じた研究。</li>
-      <li><a href="https://deepmind.google/research/publications/66938/" target="_blank" rel="noopener">Google DeepMind: Levels of AGI for Operationalizing Progress on the Path to AGI</a> — performance / generality / autonomyなどを分けて考える枠組み。</li>
-      <li><a href="https://hai.stanford.edu/ai-index/2024-ai-index-report/technical-performance" target="_blank" rel="noopener">Stanford AI Index 2024: Technical Performance</a> — 既存ベンチマーク飽和と、より難しい評価への移行。</li>
-      <li><a href="https://metr.org/time-horizons/" target="_blank" rel="noopener">METR: Task-Completion Time Horizons of Frontier AI Models</a> — AIエージェントがどの長さのタスクを一定信頼度で完遂できるかを評価。</li>
-      <li><a href="https://hai.stanford.edu/ai-index/2026-ai-index-report/economy" target="_blank" rel="noopener">Stanford AI Index 2026: Economy</a> — AI利用、エージェント導入、労働市場への影響を整理。</li>
-      <li><a href="https://www.ilo.org/publications/generative-ai-and-jobs-2025-update" target="_blank" rel="noopener">ILO: Generative AI and jobs: A 2025 update</a> — 雇用への曝露と「消滅より変容」という見通し。</li>
-    </ol>
-    <a class="toplink" href="#top">↑ ページ上部へ戻る</a>
-  </section>
-</main>
+      <div class="table-wrap"><table>
+        <thead><tr><th>年</th><th>目立った論点</th><th>期待された変化</th><th>その後に見えた進展</th><th>次に目立った不足</th></tr></thead>
+        <tbody>
+          <tr><td>2021</td><td>未知課題への汎化</td><td>Narrow AIを超える汎用性</td><td>基盤モデルと汎化能力の発展</td><td>generality</td></tr>
+          <tr><td>2022</td><td>自然言語で幅広く扱えるか</td><td>万能アシスタント</td><td>ChatGPTの急速な普及</td><td>reasoning</td></tr>
+          <tr><td>2023</td><td>数学・コード・専門知を横断できるか</td><td>知的労働の大変化</td><td>GPT-4を「初期の不完全なAGI」と見る議論も登場</td><td>reliability</td></tr>
+          <tr><td>2024</td><td>マルチモーダル、ツール、より難しい評価</td><td>専門知的業務の広範な代替</td><td>既存ベンチマークの飽和と、より難しい評価への移行</td><td>autonomy</td></tr>
+          <tr><td>2025</td><td>エージェント化</td><td>AIが仕事を丸ごと遂行</td><td>自動化ワークフロー・エージェント利用が拡大</td><td>long-horizon reliability</td></tr>
+          <tr><td>2026</td><td>長時間・高信頼の自律遂行</td><td>組織再設計、大規模な仕事代替</td><td>AI利用は広い一方、エージェント導入や労働市場への影響はまだ不均一</td><td>deployment / economic impact</td></tr>
+        </tbody>
+      </table></div>
+
+      <p class="pull">「できるようになった能力」がAGIの証拠になるより、「まだ起きていない社会変化」がAGIではない証拠として強く意識されるようになっていないか。</p>
+
+      <p>2021年のDeepMindの研究紹介では、未知の条件や未経験タスクへ適応できる、より一般的なエージェントを作ること自体が重要な研究課題として扱われていました。2023年にはMicrosoft Researchの研究者らがGPT-4について、数学、コード、視覚、医学、法律、心理などを横断する能力から「初期の、まだ不完全なAGIと合理的に見ることもできる」と論じています。</p>
+      <p>2024年のStanford AI Indexでは、ImageNet、SQuAD、SuperGLUEなど既存ベンチマークの性能が飽和し、より難しい数学・推論・コーディング・エージェント評価へ測定対象が移ったことが整理されています。つまり、能力の進展に応じて「次に測るべきもの」が変わること自体は、研究として自然な現象でもあります。</p>
+    </section>
+
+    <section class="card article" id="hidden-criterion">
+      <div class="section-no">02 / Hidden criterion</div>
+      <h2>「大量失業が起きていない＝AGIではない」は、何を混ぜているのか</h2>
+      <div class="warning"><strong>大量失業は「AIの能力」ではなく、「AI・企業・制度・人間が相互作用した結果として出てくる社会現象」です。</strong></div>
+      <p>ここが、私の違和感の中心です。</p>
+      <p>仮にAIが多くの知的作業を技術的には実行できても、企業が即座に人間を置き換えられるとは限りません。実際の仕事には、権限、機密情報、説明責任、品質保証、失敗時の復旧、顧客との関係、既存システム、法律、社内政治などが絡みます。</p>
+      <p>そのため、「AIができる」から「人間の雇用が減る」までの間には、少なくとも次の段階があります。</p>
+      <blockquote><strong>Capability</strong>（技術的にできる） → <strong>Deployment</strong>（業務で使える） → <strong>Economic impact</strong>（費用・生産性・採用が変わる） → <strong>Social transformation</strong>（組織・制度・社会が変わる）</blockquote>
+      <p>Stanford AI Index 2026は、この時間差を考えるうえで象徴的です。調査対象組織の88%がAIを利用し、70%が少なくとも一つの業務機能で生成AIを利用する一方、AIエージェントの導入はほぼすべての業務機能で一桁%にとどまると報告しています。また、若いソフトウェア開発者など一部では雇用影響が現れている一方、経済全体では大規模な雇用減少はまだ確認されていません。</p>
+      <p>ILOの2025年分析も、世界の労働者の約4人に1人が生成AIへの何らかの曝露を持つ職業にいる一方、多くの仕事は「消滅」より「変容」の可能性が高いとしています。</p>
+      <p>したがって、<strong>大量失業がまだ起きていないことは重要な観測事実ですが、それだけから「AIの汎用的知能がまだ一定水準に達していない」とは直接言えません。</strong></p>
+    </section>
+
+    <section class="card article" id="definitions">
+      <div class="section-no">03 / Definitions</div>
+      <h2>ただし「AGIのゴールポストが全部ずれた」と言うのも正確ではない</h2>
+      <p>ここは反対側も押さえておく必要があります。</p>
+      <p>例えばOpenAI CharterはAGIを、単に幅広い問題を解けるAIとは定義していません。そこでは、<strong>「経済的に価値のある仕事の大部分で人間を上回る、高度に自律的なシステム」</strong>という強い定義を採用しています。この定義なら、自律性や経済的仕事能力が不足している限り「まだAGIではない」という判断は、後から追加された条件ではありません。</p>
+      <p>一方、Google DeepMindの「Levels of AGI」は、AGIを一つのON/OFFで扱わず、能力の<strong>幅（generality）</strong>、深さ・性能（performance）、さらに展開時の<strong>自律性（autonomy）</strong>などを分けて評価する考え方を提案しています。</p>
+      <p>この見方をすると、今の混乱はかなり整理できます。</p>
+
+      <div class="agi-grid">
+        <div><b>Cognitive AGI</b>幅広い知的課題に対応できるか。現在のAIが最も大きく進んだ領域。</div>
+        <div><b>Agentic AGI</b>長時間の仕事を、状況変化や失敗に対応しながら自律的に完遂できるか。</div>
+        <div><b>Economic AGI</b>人間が行う経済的に価値のある仕事の大部分を、実際に代替できるか。</div>
+        <div><b>Embodied AGI</b>物理世界で、人間のように認識・学習・行動できるか。</div>
+      </div>
+
+      <p>この4つは厳密な標準用語として固定された分類ではなく、議論を整理するための便宜的な分け方です。しかし、<strong>「Cognitiveはかなり進んだが、Agentic・Economic・Embodiedは同じ速度では進んでいない」</strong>と考えると、現在のAIが「ものすごくAGIっぽいのに、AGI社会には見えない」理由を説明しやすくなります。</p>
+    </section>
+
+    <section class="card article" id="reliability">
+      <div class="section-no">04 / Reliability</div>
+      <h2>「問題を解ける」と「仕事を任せられる」は違った</h2>
+      <p>モデルが高性能になったことで、以前は見えにくかった別のボトルネックも明確になりました。</p>
+      <p>難しいコードを一度書けることと、一週間のプロジェクトを安心して任せられることは違います。実務では、目的を保持し、必要な情報を探し、曖昧さを処理し、途中結果を検証し、失敗から復旧し、最後まで責任ある成果物にまとめる必要があります。</p>
+      <p>METRの「Task-Completion Time Horizon」は、この違いを測ろうとする試みの一つです。人間の専門家ならどれくらい時間がかかるタスクまで、AIエージェントが一定の成功率で完了できるかを見る指標で、2026年5月時点でも継続的に更新されています。</p>
+      <p>ここから見えるのは、単なる「IQのような賢さ」ではなく、<strong>信頼して仕事を任せられる時間幅</strong>が、現在の重要な能力軸になっていることです。</p>
+      <p>つまり、条件が全部恣意的に追加されたというより、AIが進歩したからこそ、次の壁が実際に見えるようになった面もあります。</p>
+    </section>
+
+    <section class="card article" id="three-clocks">
+      <div class="section-no">05 / Three clocks</div>
+      <h2>私が一番しっくりきた整理：「3つの時計」</h2>
+      <h3>1. Intelligence Clock ― AI能力の時計</h3>
+      <p>言語、知識、推論、コード、画像、音声、ツール利用、計画など。ここ数年、最も速く進んだ時計です。</p>
+      <h3>2. Deployment Clock ― 導入の時計</h3>
+      <p>社内データへの接続、権限、セキュリティ、監査、責任分担、品質保証、業務フロー再設計。技術デモよりずっと時間がかかります。</p>
+      <h3>3. Society Clock ― 社会の時計</h3>
+      <p>採用、賃金、職種、教育、企業構造、社会保障、法律。さらに多くの人や制度が関わるため、変化は遅く、不均一になります。</p>
+      <p class="pull">AGI級に見える知能が先に現れ、その数年後に「AGI社会」が現れる、という時間差は十分あり得る。</p>
+      <p>もしこの仮説が正しければ、「社会がまだ変わっていないからAI能力もAGI未満だ」という逆算は危うくなります。むしろ見るべきなのは、どの時計がどこまで進んでいるかです。</p>
+    </section>
+
+    <section class="card article" id="my-view">
+      <div class="section-no">06 / My view</div>
+      <h2>では、AGIはもう来たのか？</h2>
+      <p>私自身は、ここを無理にYES / NOで決めなくてよいと思うようになりました。</p>
+      <p>フィジカル世界を除く知的な「汎用性」という点では、2021年頃に想像していた境界をすでにかなり越えているように感じます。一方で、長時間の自律遂行、信頼性、継続学習、責任を伴う意思決定、物理世界への適応では、人間との差がまだ大きい。</p>
+      <p>そのため現在を、</p>
+      <blockquote><strong>「AGIがある日突然到来する前夜」ではなく、複数の能力と社会実装が別々の速度で境界を越えていく移行期</strong></blockquote>
+      <p>と見る方が、私にはしっくりきます。</p>
+      <p>そして、AGIについて議論するときには次の二つを意識して分けたいと思います。</p>
+      <p><span class="tag">Definition</span><strong>AGIそのものに必要だと考える能力は何か。</strong></p>
+      <p><span class="tag">Prediction</span><strong>AGIが登場した結果として、社会に何が起きると予想するか。</strong></p>
+      <p>「大量失業」「GDPの急成長」「研究開発の爆発的加速」「人員の少ない企業」といった話は極めて重要です。ただ、それらはAGIの定義そのものなのか、AGI後についての予測なのかを区別しておかないと、予測が外れるたびにAGIの意味そのものが動いて見えてしまいます。</p>
+      <p class="pull">数年後に振り返ったとき、「AGIは○月○日に来た」とはならず、「気づけば私たちは数年間その移行期の中にいた」と評価されるのかもしれません。</p>
+    </section>
+
+    <section class="card article" id="sources">
+      <div class="section-no">Sources / Further reading</div>
+      <h2>主な参照資料</h2>
+      <p class="note">記事の時系列表は、これらを含む資料をもとにした筆者の整理です。特定機関が2021→2026の各年をこのように公式分類しているわけではありません。</p>
+      <ol class="sources">
+        <li><a href="https://openai.com/charter/" target="_blank" rel="noopener">OpenAI Charter</a> — AGIを「高度に自律的で、経済的に価値のある仕事の大部分で人間を上回るシステム」と定義。</li>
+        <li><a href="https://deepmind.google/blog/generally-capable-agents-emerge-from-open-ended-play/" target="_blank" rel="noopener">Google DeepMind: Generally capable agents emerge from open-ended play (2021)</a> — 未経験タスクへの一般化と適応を扱う研究。</li>
+        <li><a href="https://arxiv.org/abs/2303.12712" target="_blank" rel="noopener">Bubeck et al., Sparks of Artificial General Intelligence (2023)</a> — GPT-4を「初期の、まだ不完全なAGI」と合理的に見うると論じた研究。</li>
+        <li><a href="https://deepmind.google/research/publications/66938/" target="_blank" rel="noopener">Google DeepMind: Levels of AGI for Operationalizing Progress on the Path to AGI</a> — performance / generality / autonomyなどを分けて考える枠組み。</li>
+        <li><a href="https://hai.stanford.edu/ai-index/2024-ai-index-report/technical-performance" target="_blank" rel="noopener">Stanford AI Index 2024: Technical Performance</a> — 既存ベンチマーク飽和と、より難しい評価への移行。</li>
+        <li><a href="https://metr.org/time-horizons/" target="_blank" rel="noopener">METR: Task-Completion Time Horizons of Frontier AI Models</a> — AIエージェントがどの長さのタスクを一定信頼度で完遂できるかを評価。</li>
+        <li><a href="https://hai.stanford.edu/ai-index/2026-ai-index-report/economy" target="_blank" rel="noopener">Stanford AI Index 2026: Economy</a> — AI利用、エージェント導入、労働市場への影響を整理。</li>
+        <li><a href="https://www.ilo.org/publications/generative-ai-and-jobs-2025-update" target="_blank" rel="noopener">ILO: Generative AI and jobs: A 2025 update</a> — 雇用への曝露と「消滅より変容」という見通し。</li>
+      </ol>
+      <a class="toplink" href="#top">↑ ページ上部へ戻る</a>
+    </section>
+  </main>
+</div>
+
+<a class="back-to-top" id="backToTop" href="#top" aria-label="ページ上部へ戻る">↑</a>
 
 <footer>
   <div class="wrap">勉強会共有用メモ — AGIの「能力」と「社会変化」を分けて考える<br>公開検索を目的としないため、このページは検索エンジンに noindex を指定しています。</div>
 </footer>
+
+<script>
+  const progressBar = document.getElementById('progressBar');
+  const backToTop = document.getElementById('backToTop');
+  const tocLinks = [...document.querySelectorAll('.toc a[href^="#"]')];
+  const sectionIds = ['overview','timeline','hidden-criterion','definitions','reliability','three-clocks','my-view','sources'];
+  const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+
+  function updateProgress(){
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = scrollHeight > 0 ? Math.min(100, Math.max(0, scrollTop / scrollHeight * 100)) : 0;
+    progressBar.style.width = pct + '%';
+    backToTop.classList.toggle('visible', scrollTop > 650);
+  }
+  updateProgress();
+  window.addEventListener('scroll', updateProgress, {passive:true});
+
+  const observer = new IntersectionObserver((entries) => {
+    const visible = entries.filter(e => e.isIntersecting).sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top);
+    if(!visible.length) return;
+    const id = visible[0].target.id;
+    tocLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === '#' + id));
+  }, {rootMargin:'-18% 0px -68% 0px', threshold:[0, .1, .5]});
+  sections.forEach(section => observer.observe(section));
+
+  document.querySelectorAll('.mobile-toc a').forEach(link => {
+    link.addEventListener('click', () => {
+      const details = link.closest('details');
+      if(details) details.open = false;
+    });
+  });
+</script>
 </body>
 </html>
